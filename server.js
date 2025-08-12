@@ -3,6 +3,11 @@ const req = require('express/lib/request');
 const res = require('express/lib/response');
 const app = express();
 
+//! GET - Lista Todos
+//! POST - Cria Novo
+//! PUT - Atualiza
+//! DELETE - Remove
+
 // ** Permitir Receber Dados em JSON
 app.use(express.json());
 
@@ -25,7 +30,25 @@ app.post('/api/produtos', (req,res)=>{
     };
     produtos.push(novoProduto);
     res.status(201).json(novoProduto);
-})
+});
+
+// ** PUT
+app.put('/api/produtos/:id', (req,res) =>{
+    const id = parseInt(req,URLSearchParams.id);
+    const produto = produto.find(p=> p.id == id);
+    if (!produto){
+        return res.status(404).json({mensagem:'produto não encontrado'});
+    }
+    produto.nome = req.body.nome;
+    res.json(produto);
+});
+
+// ** DELETE
+app.delete('/api/produtos/:id', (req,res) =>{
+    const id = parseInt(req,params.id);
+    produtos = produtos.filter(p => p.id !== id);
+    res.status(204).send();
+});
 
 // ** Rota Principal
 app.get('/', (req, res) =>{

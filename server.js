@@ -32,23 +32,40 @@ app.post('/api/produtos', (req,res)=>{
     res.status(201).json(novoProduto);
 });
 
-// ** PUT
-app.put('/api/produtos/:id', (req,res) =>{
-    const id = parseInt(req,URLSearchParams.id);
-    const produto = produto.find(p=> p.id == id);
-    if (!produto){
-        return res.status(404).json({mensagem:'produto não encontrado'});
+//** PUT
+app.put('/api/produtos/:id', (req,res)=>{
+    const id = parseInt(req.params.id, 10);
+    const produto = produtos.find(p=> p.id ===id);
+    if(isNaN(id)){
+        return res.status(400).json({ mensagem: 'O ID fornecido não é um número valido'});
     }
-    produto.nome = req.body.nome;
+    if (!produto){
+        return res.status(404).json({mensagem:'produto não encotrado'});
+    }
+    const novoNome = req.body.nome;
+    if (!novoNome || novoNome.trim() === ''){
+        return res.status(400).json({mensagem:'O campo "nome" é obrigatório e não pode ser vazio'});
+    }
+    produto.nome =novoNome;
     res.json(produto);
 });
 
 // ** DELETE
-app.delete('/api/produtos/:id', (req,res) =>{
-    const id = parseInt(req,params.id);
-    produtos = produtos.filter(p => p.id !== id);
-    res.status(204).send();
-});
+    app.delete('/api/produtos/:id', (req,res) =>{
+        const id = parseInt(req,params.id);
+        produtos = produtos.filter(p => p.id);
+        if(isNaN(id))
+        {
+            return res.status(400).json({ mensagem: 'O ID fornecido não é um número valido'});
+        }
+        const tamanhoOriginal = produtos.length;
+        produtos = produtos.filter(p => p.id !==id);
+        if(tamanhoOriginal === produto.length)
+        {
+            return res.status(404).json({mensagem: 'Produto não encontrado'})
+        }
+        res.status(204).send();
+    })
 
 // ** Rota Principal
 app.get('/', (req, res) =>{
